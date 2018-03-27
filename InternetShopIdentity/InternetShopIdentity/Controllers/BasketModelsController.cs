@@ -129,7 +129,7 @@ namespace InternetShopIdentity.Controllers
                     Products = ((db.Baskets.First(x => x.Users == db.Users.Where(t => t.UserName == User.Identity.Name))).Products),
                     //Status = "Готовится к выполнению",
                     //Date = DateTime.Now,
-                    Users = db.Users.Where(x => x.Id == User.Identity.GetUserId()).ToList(),
+                    //Users = db.Users.Where(x => x.Id == User.Identity.GetUserId()).ToList(),
                     //Address = db.Users.First(x => x.UserName == User.Identity.Name).Address
                 });
                 db.Baskets.Remove(db.Baskets.First(x => x.Users == db.Users.Where(t => t.UserName == User.Identity.Name)));

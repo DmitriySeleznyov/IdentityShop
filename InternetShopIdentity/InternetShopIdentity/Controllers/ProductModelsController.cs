@@ -121,10 +121,10 @@ namespace InternetShopIdentity.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-        //передать в корзину ид пользователя для очистки корзины по его товарам.
+
         public ActionResult Buy(int id, int count)
         {
-            db.Baskets.Add(new BasketModel { Count = count, Products = db.Products.Where(x => x.IDProduct == id).ToList(), Date = DateTime.Now, Users = db.Users.Where(x => x.Id == User.Identity.GetUserId()).ToList() });
+            db.Baskets.Add(new BasketModel { Count = count, Products = db.Products.Where(x => x.IDProduct == id).ToList(), Date = DateTime.Now/*, Users = db.Users.Where(x => x.Id == User.Identity.GetUserId()).ToList()*/ });
             db.SaveChanges();
             return RedirectToAction("Index");
         }

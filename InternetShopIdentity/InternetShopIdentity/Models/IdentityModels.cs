@@ -28,7 +28,7 @@ namespace InternetShopIdentity.Models
         {
         }
 
-        public DbSet<IdentityUser> Users { get; set; }
+        //public DbSet<IdentityUser> Users { get; set; }
         public DbSet<OrderModel> Orders { get; set; }
         public DbSet<ProductModel> Products { get; set; }
         public DbSet<BasketModel> Baskets { get; set; }
