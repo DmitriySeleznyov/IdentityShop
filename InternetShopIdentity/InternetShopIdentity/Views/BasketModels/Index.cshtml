@@ -1,0 +1,41 @@
+﻿@model IEnumerable<InternetShop.Models.BasketModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Count)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Count)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.IDBasket }) |
+            @Html.ActionLink("Details", "Details", new { id=item.IDBasket }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.IDBasket })
+        </td>
+    </tr>
+}
+</table>
+<div>
+    @Html.ActionLink("Ordering", "Ordering")
+</div>
