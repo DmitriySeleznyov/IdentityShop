@@ -12,17 +12,13 @@ using Microsoft.AspNet.Identity;
 
 namespace InternetShopIdentity.Controllers
 {
-    public class ProductModelsController : Controller
+    public class ProductModelsController : MainController
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
-        // GET: ProductModels
         public ActionResult Index()
         {
             return View(db.Products.ToList());
         }
 
-        // GET: ProductModels/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -37,16 +33,12 @@ namespace InternetShopIdentity.Controllers
             return View(productModel);
         }
 
-        // GET: ProductModels/Create
         [Authorize(Roles = "seller")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: ProductModels/Create
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "IDProduct,Name,Count,Price")] ProductModel productModel)
@@ -61,7 +53,6 @@ namespace InternetShopIdentity.Controllers
             return View(productModel);
         }
 
-        // GET: ProductModels/Edit/5
         [Authorize(Roles = "seller")]
         public ActionResult Edit(int? id)
         {
@@ -77,9 +68,6 @@ namespace InternetShopIdentity.Controllers
             return View(productModel);
         }
 
-        // POST: ProductModels/Edit/5
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "seller")]
@@ -94,7 +82,6 @@ namespace InternetShopIdentity.Controllers
             return View(productModel);
         }
 
-        // GET: ProductModels/Delete/5
         [Authorize(Roles = "seller")]
         public ActionResult Delete(int? id)
         {
@@ -110,7 +97,6 @@ namespace InternetShopIdentity.Controllers
             return View(productModel);
         }
 
-        // POST: ProductModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "seller")]
@@ -124,7 +110,17 @@ namespace InternetShopIdentity.Controllers
 
         public ActionResult Buy(int id, int count)
         {
-            db.Baskets.Add(new BasketModel { Count = count, Products = db.Products.Where(x => x.IDProduct == id).ToList(), Date = DateTime.Now/*, Users = db.Users.Where(x => x.Id == User.Identity.GetUserId()).ToList()*/ });
+            var userId = User.Identity.GetUserId();
+            BasketModel bsk = new BasketModel {
+                Count = count,
+                Date = DateTime.Now,
+                Users = db.Users.Where(x => x.Id == userId).ToList(),
+                Products = db.Products.Where(x => x.IDProduct == id).ToList(),
+            };
+            var a = bsk.Products;
+            bsk.Products = a;
+            db.Baskets.Add(bsk);
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -13,7 +13,7 @@ using InternetShopIdentity.Models;
 namespace InternetShopIdentity.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : MainController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -52,8 +52,6 @@ namespace InternetShopIdentity.Controllers
             }
         }
 
-        //
-        // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -61,8 +59,6 @@ namespace InternetShopIdentity.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -72,9 +68,6 @@ namespace InternetShopIdentity.Controllers
             {
                 return View(model);
             }
-
-            // Сбои при входе не приводят к блокированию учетной записи
-            // Чтобы ошибки при вводе пароля инициировали блокирование учетной записи, замените на shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {

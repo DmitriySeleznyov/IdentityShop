@@ -9,20 +9,16 @@ using System.Web.Mvc;
 using InternetShop.Models;
 using InternetShopIdentity.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace InternetShopIdentity.Controllers
 {
-    public class BasketModelsController : Controller
+    public class BasketModelsController : MainController
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
-        // GET: BasketModels
         public ActionResult Index()
         {
             return View(db.Baskets.ToList());
         }
-
-        // GET: BasketModels/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -36,16 +32,10 @@ namespace InternetShopIdentity.Controllers
             }
             return View(basketModel);
         }
-
-        // GET: BasketModels/Create
         public ActionResult Create()
         {
             return View();
         }
-
-        // POST: BasketModels/Create
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "IDBasket,Date,Count")] BasketModel basketModel)
@@ -59,8 +49,6 @@ namespace InternetShopIdentity.Controllers
 
             return View(basketModel);
         }
-
-        // GET: BasketModels/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -74,10 +62,6 @@ namespace InternetShopIdentity.Controllers
             }
             return View(basketModel);
         }
-
-        // POST: BasketModels/Edit/5
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "IDBasket,Date,Count")] BasketModel basketModel)
@@ -90,8 +74,6 @@ namespace InternetShopIdentity.Controllers
             }
             return View(basketModel);
         }
-
-        // GET: BasketModels/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -105,8 +87,6 @@ namespace InternetShopIdentity.Controllers
             }
             return View(basketModel);
         }
-
-        // POST: BasketModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -116,25 +96,26 @@ namespace InternetShopIdentity.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-        public ActionResult Ordering(ApplicationUser user)
+        public ActionResult Ordering()
         {
-            //IDUser = 1;
-            //User.Identity.Name
-            for (int i = 0; i < db.Baskets.Where(x => x.Users == db.Users.Where(t => t.Id == User.Identity.GetUserId())).Count(); i++)
+            var userId = User.Identity.GetUserId();
+            foreach (var basket in db.Baskets.Where(
+               x => x.Users.Contains(db.Users.FirstOrDefault(t => t.Id == userId))))
             {
-
                 db.Orders.Add(new OrderModel
                 {
-                    Count = ((db.Baskets.First(x => x.Users == db.Users.Where(t => t.UserName == User.Identity.Name))).Count),
-                    Products = ((db.Baskets.First(x => x.Users == db.Users.Where(t => t.UserName == User.Identity.Name))).Products),
-                    //Status = "Готовится к выполнению",
-                    //Date = DateTime.Now,
-                    //Users = db.Users.Where(x => x.Id == User.Identity.GetUserId()).ToList(),
-                    //Address = db.Users.First(x => x.UserName == User.Identity.Name).Address
+                    Count = basket.Count,
+                    Products = basket.Products,
+                    Status = "Готовится к выполнению",
+                    Date = DateTime.UtcNow,
+                    Users = new List<ApplicationUser>(),
+                    Address = "Nova Poch"
                 });
-                db.Baskets.Remove(db.Baskets.First(x => x.Users == db.Users.Where(t => t.UserName == User.Identity.Name)));
+              
+                db.Baskets.Remove(basket);
             }
-            return RedirectToAction("Index");
+            db.SaveChanges();
+              return RedirectToAction("Index","ProductModels");
         }
         protected override void Dispose(bool disposing)
         {
@@ -146,3 +127,4 @@ namespace InternetShopIdentity.Controllers
         }
     }
 }
+ 

@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace InternetShopIdentity.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : MainController
     {
         [Authorize]
         public ActionResult Index()
@@ -22,11 +22,8 @@ namespace InternetShopIdentity.Controllers
                 roles = userManager.GetRoles(user.Id);
 
             return View(roles);
-            //return RedirectToAction("Index");
-            //return View();
         }
 
-        [Authorize(Roles = "seller")]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

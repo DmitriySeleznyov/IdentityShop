@@ -1,4 +1,5 @@
-﻿using InternetShopIdentity.Models.DataBaseModel;
+﻿using InternetShopIdentity.Models;
+using InternetShopIdentity.Models.DataBaseModel;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,6 @@ namespace InternetShop.Models
         public string Address { get; set; }
         //связи
         public ICollection<ProductModel> Products { get; set; }
-        public ICollection<IdentityUser> Users { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
     }
 }
